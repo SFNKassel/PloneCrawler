@@ -45,8 +45,17 @@ public class Page {
 		ArrayList<Page> links = new ArrayList<Page>();
 		for (int i = 0; i < raw.length; i++) {
 			try {
+				if (raw[i].startsWith("../")) {
+					URL superURL = url;
+					do {
+						String s = superURL.toString();
+						superURL = new URL(s.substring(0, s.lastIndexOf('/')));
+						raw[i] = raw[i].substring(3);
+					} while (raw[i].startsWith("../"));
+					raw[i] = superURL.toString() +"/"+ raw[i];
+				}
 				URL newUrl = new URL(raw[i]);
-				if (checkURL(url))
+				if (checkURL(newUrl))
 					links.add(new Page(newUrl));
 			} catch (MalformedURLException e) {
 //				e.printStackTrace();
@@ -60,7 +69,8 @@ public class Page {
 	}
 	
 	private boolean checkURL(URL url) {
-		return url.toString().contains("https://docs.oracle.com/javase/8/javafx/api");
+		return url.toString().contains("https://docs.oracle.com/javase/8/javafx/api")
+				&& !url.toString().contains("#");
 	}
 	
 	@Override

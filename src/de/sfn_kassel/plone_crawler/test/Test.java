@@ -31,19 +31,19 @@ public class Test {
 		OnTaskQueEmptyListener onTaskQueEmptyListener = new OnTaskQueEmptyListener() {
 			@Override
 			public synchronized Page taskQueEmpty() {
-				while(true)
-				while (true) {
-					synchronized (futurePages) {
-						try {
-							futurePages.get(0);
-						} catch (IndexOutOfBoundsException e) {
-							break;
+				while (true)
+					while (true) {
+						synchronized (futurePages) {
+							try {
+								futurePages.get(0);
+							} catch (IndexOutOfBoundsException e) {
+								break;
+							}
+							Page returnPage = futurePages.get(0);
+							futurePages.remove(0);
+							return returnPage;
 						}
-						Page returnPage = futurePages.get(0);
-						futurePages.remove(0);
-						return returnPage;
 					}
-				}
 			}
 		};
 
