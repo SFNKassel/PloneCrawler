@@ -35,15 +35,15 @@ public class Page {
 		
 	}
 	
-	public URL[] getLinks() {
+	public Page[] getLinks() {
 		String[] raw = content.toString().split("href=\"");
 		for (int i = 0; i < raw.length; i++) {
 			raw[i] = raw[i].split("\"")[0];
 		}
-		URL[] links = new URL[raw.length - 1];
+		Page[] links = new Page[raw.length - 1];
 		for (int i = 0; i < links.length; i++) {
 			try {
-				links[i] = new URL(raw[i + 1]);
+				links[i] = new Page(new URL(raw[i + 1]));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
