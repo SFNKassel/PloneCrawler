@@ -1,6 +1,5 @@
 package de.sfn_kassel.plone_crawler.test;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,7 +25,7 @@ public class Page {
 			String content = scanner.next();
 			scanner.close();
 			this.content = new PageContent(content, Type.Success);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			this.content = new PageContent("error", Type.Error);
 		}
 	}
@@ -45,7 +44,7 @@ public class Page {
 			try {
 				links[i] = new Page(new URL(raw[i + 1]));
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		return links;

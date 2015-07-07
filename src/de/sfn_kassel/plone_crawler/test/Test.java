@@ -5,17 +5,18 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class Test {
-	
+
 	static ArrayList<Page> futurePages = new ArrayList<>();
 	static ArrayList<Page> donePages = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
-		futurePages.add(new Page(new URL("http://www.phytikclub.de")));
-		
+		futurePages.add(new Page(new URL("http://www.physikclub.de")));
+
 		OnTaskFinished onTaskFinished = new OnTaskFinished() {
-			
+
 			@Override
-			public void taskQueEmpty(Page finished) {
+			public synchronized void taskQueEmpty(Page finished) {
+				System.out.println("done: " + donePages.size()  + " | todo: " + futurePages.size());
 				synchronized (donePages) {
 					donePages.add(finished);
 					synchronized (futurePages) {
@@ -26,29 +27,27 @@ public class Test {
 				}
 			}
 		};
-		
+
 		OnTaskQueEmptyListener onTaskQueEmptyListener = new OnTaskQueEmptyListener() {
-			
 			@Override
-			public Page taskQueEmpty() {
-				synchronized (futurePages) {
-					boolean exsist = false;
-					while (!exsist){
+			public synchronized Page taskQueEmpty() {
+				while(true)
+				while (true) {
+					synchronized (futurePages) {
 						try {
 							futurePages.get(0);
-							exsist = true;
-						} catch (ArrayIndexOutOfBoundsException e) {
-							
+						} catch (IndexOutOfBoundsException e) {
+							break;
 						}
+						Page returnPage = futurePages.get(0);
+						futurePages.remove(0);
+						return returnPage;
 					}
-					Page returnPage = futurePages.get(0);
-					futurePages.remove(0);
-					return returnPage;
 				}
 			}
 		};
-		
-		for (int i = 0; i < 1; i++) {
+
+		for (int i = 0; i < 10; i++) {
 			Crawler c = new Crawler(onTaskQueEmptyListener, onTaskFinished);
 			c.setName("Crawler Thread " + i);
 			c.start();
