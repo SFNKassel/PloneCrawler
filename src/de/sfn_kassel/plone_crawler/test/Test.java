@@ -47,7 +47,7 @@ public class Test {
 			}
 		};
 
-		for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+		for (int i = 0; i < 10; i++) {
 			Crawler c = new Crawler(onTaskQueEmptyListener, onTaskFinished);
 			c.setName("Crawler Thread " + i);
 			c.start();
