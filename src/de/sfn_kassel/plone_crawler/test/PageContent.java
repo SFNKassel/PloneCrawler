@@ -10,6 +10,11 @@ public class PageContent {
 		this.contentType = type;
 	}
 	
+	@Override
+	public String toString() {
+		return content;
+	}
+	
 	public enum Type {
 		Success, Error404("404"), Error;
 		

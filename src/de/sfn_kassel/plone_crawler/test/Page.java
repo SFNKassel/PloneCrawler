@@ -35,6 +35,22 @@ public class Page {
 		
 	}
 	
+	public URL[] getLinks() {
+		String[] raw = content.toString().split("href=\"");
+		for (int i = 0; i < raw.length; i++) {
+			raw[i] = raw[i].split("\"")[0];
+		}
+		URL[] links = new URL[raw.length - 1];
+		for (int i = 0; i < links.length; i++) {
+			try {
+				links[i] = new URL(raw[i + 1]);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		return links;
+	}
+	
 	@Override
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + content == null ? "false" : "true" + "]";
