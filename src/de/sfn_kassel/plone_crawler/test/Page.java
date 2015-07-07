@@ -20,7 +20,7 @@ public class Page {
 	public void loadPage() throws MalformedURLException {
 		URLConnection connection = null;
 		try {
-			connection = new URL(url.toString()).openConnection();
+			connection = url.openConnection();
 			Scanner scanner = new Scanner(connection.getInputStream());
 			scanner.useDelimiter("\\Z");
 			String content = scanner.next();
@@ -53,7 +53,6 @@ public class Page {
 	
 	@Override
 	public String toString() {
-		return "[Page: " + this.url.toString() + " loaded: " + content == null ? "false" : "true" + "]";
-		
+		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
 	}
 }
