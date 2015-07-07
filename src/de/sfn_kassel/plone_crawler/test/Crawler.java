@@ -11,6 +11,10 @@ public class Crawler extends Thread{
 	
 	@Override
 	public void run() {
-		
+		while (true) {
+			Page currentPage = onTaskQueEmptyListener.taskQueEmpty();
+			currentPage.loadPage();
+			onTaskFinished.taskQueEmpty(currentPage);
+		}
 	}
 }

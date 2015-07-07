@@ -17,7 +17,7 @@ public class Page {
 		this.url = url;
 	}
 	
-	public void loadPage() throws MalformedURLException {
+	public void loadPage() {
 		URLConnection connection = null;
 		try {
 			connection = url.openConnection();

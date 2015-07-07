@@ -18,6 +18,11 @@ public class Test {
 			public void taskQueEmpty(Page finished) {
 				synchronized (donePages) {
 					donePages.add(finished);
+					synchronized (futurePages) {
+						for (Page p : finished.getLinks()) {
+							futurePages.add(p);
+						}
+					}
 				}
 			}
 		};
