@@ -51,6 +51,10 @@ public class Page {
 		return links;
 	}
 	
+	public Integer getContentHash() {
+		return content == null ? null : content.hashCode();
+	}
+	
 	@Override
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
