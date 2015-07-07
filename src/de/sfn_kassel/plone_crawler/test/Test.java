@@ -10,7 +10,7 @@ public class Test {
 	static ArrayList<Page> donePages = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
-		futurePages.add(new Page(new URL("http://www.physikclub.de")));
+		futurePages.add(new Page(new URL("https://docs.oracle.com/javase/8/javafx/api/javafx/scene/shape/TriangleMesh.html")));
 
 		OnTaskFinished onTaskFinished = new OnTaskFinished() {
 

@@ -3,6 +3,8 @@ package de.sfn_kassel.plone_crawler.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
@@ -14,6 +16,7 @@ public class Page {
 	
 	public Page(URL url) {
 		this.url = url;
+		System.out.println(url);
 	}
 	
 	public void loadPage() {
@@ -39,19 +42,25 @@ public class Page {
 		for (int i = 0; i < raw.length; i++) {
 			raw[i] = raw[i].split("\"")[0];
 		}
-		Page[] links = new Page[raw.length - 1];
-		for (int i = 0; i < links.length; i++) {
+		ArrayList<Page> links = new ArrayList<Page>();
+		for (int i = 0; i < raw.length; i++) {
 			try {
-				links[i] = new Page(new URL(raw[i + 1]));
+				URL newUrl = new URL(raw[i]);
+				if (checkURL(url))
+					links.add(new Page(newUrl));
 			} catch (MalformedURLException e) {
 //				e.printStackTrace();
 			}
 		}
-		return links;
+		return links.toArray(new Page[1]);
 	}
 	
 	public Integer getContentHash() {
 		return content == null ? null : content.hashCode();
+	}
+	
+	private boolean checkURL(URL url) {
+		return url.toString().contains("https://docs.oracle.com/javase/8/javafx/api");
 	}
 	
 	@Override
