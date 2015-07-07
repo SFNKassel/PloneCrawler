@@ -12,9 +12,13 @@ public class Crawler extends Thread{
 	@Override
 	public void run() {
 		while (true) {
+			try {
 			Page currentPage = onTaskQueEmptyListener.taskQueEmpty();
 			currentPage.loadPage();
 			onTaskFinished.taskQueEmpty(currentPage);
+			} catch(Exception e) {
+//				e.printStackTrace();
+			}
 		}
 	}
 }
