@@ -15,16 +15,15 @@ import java.util.regex.Matcher;
 
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
-
 public class Page {
-	
+
 	URL url;
 	PageContent content;
-	
+
 	public Page(URL url) {
 		this.url = url;
 	}
-	
+
 	public void loadPage() {
 		URLConnection connection = null;
 		try {
@@ -50,9 +49,14 @@ public class Page {
 		bfw.write(content.content);
 		bfw.close();
 	}
-	
+
 	public Page[] getLinks() {
 		String[] raw = getLinkStrings();
+		// System.err.println("\n\n\n\n________________________________________");
+		// for (String string : raw) {
+		// System.err.println(string);
+		// }
+		// System.err.println("________________________________________\n\n\n\n");
 		ArrayList<Page> links = new ArrayList<Page>();
 		for (int i = 0; i < raw.length; i++) {
 			try {
@@ -77,14 +81,18 @@ public class Page {
 		return links.toArray(new Page[1]);
 	}
 
-
 	public void replaceLinks(String rootName) {
 		String[] links = getLinkStrings();
 		for (String link : links) {
-			content.content = content.content.replaceAll(Matcher.quoteReplacement(link), new HashLink(link).getNameHash(rootName));
+			try {
+				content.content = content.content.replaceAll(Matcher.quoteReplacement(link),
+						new HashLink(link).getNameHash(rootName));
+			} catch (Exception BinaryNonsense) {
+
+			}
 		}
 	}
-	
+
 	private String[] getLinkStrings() {
 		String[] href = content.toString().split("href=\"");
 		for (int i = 0; i < href.length; i++) {
@@ -98,14 +106,14 @@ public class Page {
 		// System.out.println("ping");
 		// String[] raw = (String[]) Stream.concat(Arrays.stream(href),
 		// Arrays.stream(href)).toArray();
-		String[] raw = Arrays.copyOf(href, href.length+src.length);
+		String[] raw = Arrays.copyOf(href, href.length + src.length);
 		System.arraycopy(src, 0, raw, href.length, src.length);
 		return raw;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
 	}
-	
+
 }

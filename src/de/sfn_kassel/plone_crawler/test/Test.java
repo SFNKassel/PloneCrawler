@@ -46,12 +46,14 @@ public class Test {
 					donePages.add(finished);
 					synchronized (futurePages) {
 						for (Page p : finished.getLinks()) {
+							try {
 							if (urlChecker.check(p.url)) {
 								synchronized (urls) {
 									urls.add(p.url.toString());
 								}
 								futurePages.add(p);
 							}
+							} catch (Exception binaryNnsense) {}
 						}
 						System.out.println(finished.url.toString() + "	->	" + new HashLink(finished.url.toString()).getNameHash(startpage) +"(remaining: " + futurePages.size() + ")");
 					}
@@ -82,7 +84,7 @@ public class Test {
 		};
 		
 		ArrayList<Crawler> crawlers = new ArrayList<>();
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 10; i++) {
 			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener, startpage);
 			c.setName("Crawler Thread " + i);
 			c.start();
