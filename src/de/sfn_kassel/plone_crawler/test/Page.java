@@ -3,9 +3,11 @@ package de.sfn_kassel.plone_crawler.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
@@ -13,12 +15,11 @@ public class Page {
 
 	URL url;
 	PageContent content;
-	
+
 	public Page(URL url) {
 		this.url = url;
-		System.out.println(url);
 	}
-	
+
 	public void loadPage() {
 		URLConnection connection = null;
 		try {
@@ -34,14 +35,22 @@ public class Page {
 	}
 
 	public void writePage() {
-		
+
 	}
-	
+
 	public Page[] getLinks() {
-		String[] raw = content.toString().split("href=\"");
-		for (int i = 0; i < raw.length; i++) {
-			raw[i] = raw[i].split("\"")[0];
+		String[] href = content.toString().split("href=\"");
+		for (int i = 0; i < href.length; i++) {
+			href[i] = href[i].split("\"")[0];
 		}
+
+		String[] src = content.toString().split("src=\"");
+		for (int i = 0; i < src.length; i++) {
+			src[i] = src[i].split("\"")[0];
+		}
+		System.out.println("ping");
+		String[] raw = (String[]) Stream.concat(Arrays.stream(href), Arrays.stream(src)).toArray();
+		System.out.println("pong");
 		ArrayList<Page> links = new ArrayList<Page>();
 		for (int i = 0; i < raw.length; i++) {
 			try {
@@ -52,27 +61,32 @@ public class Page {
 						superURL = new URL(s.substring(0, s.lastIndexOf('/')));
 						raw[i] = raw[i].substring(3);
 					} while (raw[i].startsWith("../"));
-					raw[i] = superURL.toString() +"/"+ raw[i];
+					raw[i] = superURL.toString() + "/" + raw[i];
 				}
 				URL newUrl = new URL(raw[i]);
-				if (checkURL(newUrl))
-					links.add(new Page(newUrl));
+				links.add(new Page(newUrl));
 			} catch (MalformedURLException e) {
-//				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return links.toArray(new Page[1]);
 	}
-	
-	public Integer getContentHash() {
-		return content == null ? null : content.hashCode();
+
+	public String getNameHash() {
+		String beginning = url.toString().substring(0, url.toString().lastIndexOf('.') - 1);
+		String end = url.toString().substring(url.toString().lastIndexOf('.'));
+		if (end.equals(".de"))
+			return "index.html";
+		
+		try {
+			return HashLink.hash(beginning) + end;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
-	private boolean checkURL(URL url) {
-		return url.toString().contains("https://docs.oracle.com/javase/8/javafx/api")
-				&& !url.toString().contains("#");
-	}
-	
+
 	@Override
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
