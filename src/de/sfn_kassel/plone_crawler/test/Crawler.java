@@ -27,9 +27,9 @@ public class Crawler extends Thread{
 			currentPage.loadPage();
 			i++;
 			setNamePostfix("waiting" + "	(" + i + ")");
-			currentPage.replaceLinks(startname);
-			currentPage.writePage(new File("page/"), startname);
 			onTaskFinished.onTaskFinished(currentPage);
+//			currentPage.replaceLinks(startname);
+			currentPage.writePage(new File("page/"), startname);
 			} catch(Exception e) {
 //				e.printStackTrace();
 			}

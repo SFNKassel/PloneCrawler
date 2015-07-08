@@ -37,7 +37,7 @@ public class Page {
 	}
 
 	public void writePage(File dir, String rootName) throws IOException {
-		FileWriter fw = new FileWriter(dir.getAbsolutePath() + new HashLink(url.toString()).getNameHash(rootName));
+		FileWriter fw = new FileWriter(dir.getAbsolutePath() + "/" + new HashLink(url.toString()).getNameHash(rootName));
 		fw.write(content.content);
 		fw.close();
 	}
