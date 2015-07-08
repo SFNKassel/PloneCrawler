@@ -32,7 +32,7 @@ public class Crawler extends Thread{
 			onTaskFinished.onTaskFinished(currentPage);
 
 			currentPage.replaceLinks(startpage);
-			currentPage.writePage(new File("page/"), startpage);
+			currentPage.writePage("pages", startpage);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

@@ -1,11 +1,13 @@
 package de.sfn_kassel.plone_crawler.test;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -37,10 +39,16 @@ public class Page {
 		}
 	}
 
-	public void writePage(File dir, String rootName) throws IOException {
-		FileWriter fw = new FileWriter(dir.getAbsolutePath() + "/" + new HashLink(url.toString()).getNameHash(rootName));
-		fw.write(content.content);
-		fw.close();
+	public void writePage(String dir, String rootName) throws IOException {
+		File f = new File(dir + "/" + new HashLink(url.toString()).getNameHash(rootName));
+		if (!f.exists()) {
+			f.getParentFile().mkdirs();
+			f.createNewFile();
+		}
+		FileWriter fw = new FileWriter(f);
+		BufferedWriter bfw = new BufferedWriter(fw);
+		bfw.write(content.content);
+		bfw.close();
 	}
 	
 	public Page[] getLinks() {

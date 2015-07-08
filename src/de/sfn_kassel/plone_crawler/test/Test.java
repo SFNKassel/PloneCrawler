@@ -53,7 +53,7 @@ public class Test {
 								futurePages.add(p);
 							}
 						}
-						System.out.println(finished.url.toString() + "	->	(remaining: " + futurePages.size() + ")");
+						System.out.println(finished.url.toString() + "	->	" + new HashLink(finished.url.toString()).getNameHash(startpage) +"(remaining: " + futurePages.size() + ")");
 					}
 				}
 				System.out.println(before + "," + (futurePages.size() - before) + "," + donePages.size());
@@ -82,7 +82,7 @@ public class Test {
 		};
 		
 		ArrayList<Crawler> crawlers = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
 			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener, startpage);
 			c.setName("Crawler Thread " + i);
 			c.start();
