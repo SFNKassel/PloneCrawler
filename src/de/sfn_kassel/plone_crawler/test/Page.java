@@ -5,10 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Stream;
-
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
 public class Page {
@@ -48,9 +45,11 @@ public class Page {
 		for (int i = 0; i < src.length; i++) {
 			src[i] = src[i].split("\"")[0];
 		}
-		System.out.println("ping");
-		String[] raw = (String[]) Stream.concat(Arrays.stream(href), Arrays.stream(src)).toArray();
-		System.out.println("pong");
+		// System.out.println("ping");
+		// String[] raw = (String[]) Stream.concat(Arrays.stream(href),
+		// Arrays.stream(href)).toArray();
+		String[] raw = href; // TODO: Fix me
+		// System.out.println("pong");
 		ArrayList<Page> links = new ArrayList<Page>();
 		for (int i = 0; i < raw.length; i++) {
 			try {
@@ -71,21 +70,6 @@ public class Page {
 		}
 		return links.toArray(new Page[1]);
 	}
-
-	public String getNameHash() {
-		String beginning = url.toString().substring(0, url.toString().lastIndexOf('.') - 1);
-		String end = url.toString().substring(url.toString().lastIndexOf('.'));
-		if (end.equals(".de"))
-			return "index.html";
-		
-		try {
-			return HashLink.hash(beginning) + end;
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
 
 	@Override
 	public String toString() {

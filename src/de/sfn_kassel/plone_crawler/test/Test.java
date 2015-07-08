@@ -20,12 +20,14 @@ public class Test {
 				boolean exsist = false;
 				synchronized (Urls) {
 					for (String page : Urls) {
-						if (page.equals(object.toString())) {
+						if (page.equals(new HashLink(object).getNameHash(startpage))) {
 							exsist = true;
 							break;
 						}
 					}
 				}
+				
+//				System.err.println(exsist ? "true	" : "false	" + object.toString());
 				return !object.toString().contains("#") && object.toString().contains(startpage)
 						&& !object.toString().contains("@") && !exsist;
 			}
@@ -38,29 +40,22 @@ public class Test {
 				// System.out.println("done: " + donePages.size() + " | todo: "
 				// + futurePages.size() + " "
 				// + finished.url.toString());
-				System.out.println("1");
 				int before = futurePages.size() + 1;
 				synchronized (donePages) {
-					System.out.println("2");
 					donePages.add(finished);
+					System.out.println(finished.url.toString() + "	->	" + new HashLink(finished.url).getNameHash(startpage));
 					synchronized (futurePages) {
-						System.out.println("db");
 						for (Page p : finished.getLinks()) {
-							System.out.println("db2");
 							if (URLChecker.check(p.url)) {
-								System.out.println("deadlock");
 								synchronized (Urls) {
-									System.out.println("2.5");
-									Urls.add(p.url.toString());
+									Urls.add(new HashLink(p.url).getNameHash(startpage));
 								}
 								futurePages.add(p);
 							}
-							System.out.println("3");
 						}
-						System.out.println("jo");
 					}
 				}
-				System.out.println(before + "," + (futurePages.size() - before) + "," + donePages.size());
+//				System.out.println(before + "," + (fguturePages.size() - before) + "," + donePages.size());
 			}
 		};
 
@@ -77,14 +72,14 @@ public class Test {
 							}
 							Page returnPage = futurePages.get(0);
 							futurePages.remove(0);
-							System.out.println(returnPage.getNameHash());
+//							System.out.println(returnPage.url.toString());
 							return returnPage;
 						}
 					}
 			}
 		};
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 10; i++) {
 			Crawler c = new Crawler(onTaskQueEmptyListener, onTaskFinished);
 			c.setName("Crawler Thread " + i);
 			c.start();
