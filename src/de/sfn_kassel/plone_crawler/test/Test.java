@@ -3,12 +3,13 @@ package de.sfn_kassel.plone_crawler.test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Test {
 
 	static ArrayList<Page> futurePages = new ArrayList<>();
 	static ArrayList<Page> donePages = new ArrayList<>();
-	static ArrayList<String> urls = new ArrayList<>();
+	static HashSet<String> urls = new HashSet<>();
 
 	public static void main(String[] args) throws IOException {
 		String startpage = "http://physikclub.de";
@@ -19,12 +20,7 @@ public class Test {
 			public boolean check(URL object) {
 				boolean exists = false;
 				synchronized (urls) {
-					for (String page : urls) {
-						if (page.equals(new HashLink(object).getNameHash(startpage))) {
-							exists = true;
-							break;
-						}
-					}
+					exists = urls.contains(object.toString());
 				}
 				
 //				System.err.println(exsist ? "true	" : "false	" + object.toString());
@@ -43,12 +39,12 @@ public class Test {
 				int before = futurePages.size() + 1;
 				synchronized (donePages) {
 					donePages.add(finished);
-					System.out.println(finished.url.toString() + "	->	" + new HashLink(finished.url).getNameHash(startpage));
+					System.out.println(finished.url.toString() + "	->	" /*+ new HashLink(finished.url).getNameHash(startpage)*/);
 					synchronized (futurePages) {
 						for (Page p : finished.getLinks()) {
 							if (urlChecker.check(p.url)) {
 								synchronized (urls) {
-									urls.add(new HashLink(p.url).getNameHash(startpage));
+									urls.add(p.url.toString());
 								}
 								futurePages.add(p);
 							}

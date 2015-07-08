@@ -4,6 +4,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Deprecated
 public class HashLink {
 	URL url;
 	
