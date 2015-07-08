@@ -8,17 +8,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Test {
 
+public class Test {
+	
 	static ArrayList<Page> futurePages = new ArrayList<>();
 	static ArrayList<Page> donePages = new ArrayList<>();
 	static HashSet<String> urls = new HashSet<>();
-
+	
 	public static void main(String[] args) throws IOException {
-//		String startpage = "http://physikclub.de";
-		String startpage = "http://blog.aschnabel.bplaced.net";
+		// String startpage = "http://physikclub.de";
+		String startpage = "http://blog.aschnabel.bplaced.net/";
 		futurePages.add(new Page(new URL(startpage)));
-
+		
 		Checker<URL> urlChecker = new Checker<URL>() {
 			@Override
 			public boolean check(URL object) {
@@ -27,14 +28,14 @@ public class Test {
 					exists = urls.contains(object.toString());
 				}
 				
-//				System.err.println(exsist ? "true	" : "false	" + object.toString());
+				// System.err.println(exsist ? "true	" : "false	" + object.toString());
 				return !object.toString().contains("#") && object.toString().contains(startpage)
 						&& !object.toString().contains("@") && !exists;
 			}
 		};
-
+		
 		TaskFinishedListener taskFinishedListener = new TaskFinishedListener() {
-
+			
 			@Override
 			public synchronized void onTaskFinished(Page finished) {
 				// System.out.println("done: " + donePages.size() + " | todo: "
@@ -43,7 +44,6 @@ public class Test {
 				int before = futurePages.size() + 1;
 				synchronized (donePages) {
 					donePages.add(finished);
-					System.out.println(finished.url.toString() + "	->	" /*+ new HashLink(finished.url).getNameHash(startpage)*/);
 					synchronized (futurePages) {
 						for (Page p : finished.getLinks()) {
 							if (urlChecker.check(p.url)) {
@@ -53,12 +53,14 @@ public class Test {
 								futurePages.add(p);
 							}
 						}
+						System.out.println(finished.url.toString() + "	->	(remaining: " + futurePages.size() + ")");
 					}
 				}
 				System.out.println(before + "," + (futurePages.size() - before) + "," + donePages.size());
+
 			}
 		};
-
+		
 		TaskQueEmptyListener taskQueEmptyListener = new TaskQueEmptyListener() {
 			@Override
 			public synchronized Page onTaskQueEmpty() {
@@ -72,17 +74,19 @@ public class Test {
 							}
 							Page returnPage = futurePages.get(0);
 							futurePages.remove(0);
-//							System.out.println(returnPage.url.toString());
+							// System.out.println(returnPage.url.toString());
 							return returnPage;
 						}
 					}
 			}
 		};
-
+		
+		ArrayList<Crawler> crawlers = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener);
 			c.setName("Crawler Thread " + i);
 			c.start();
+			crawlers.add(c);
 		}
 		
 		while (true) {
@@ -103,8 +107,17 @@ public class Test {
 				System.out.println("finished");
 			}
 			synchronized (futurePages) {
-				if (futurePages.isEmpty())
-					break;
+				if (futurePages.isEmpty()) {
+					boolean ended = true;
+					for (Crawler c : crawlers) {
+						if (!c.waiting) {
+							ended = false;
+							break;
+						}
+						if (ended)
+							System.exit(0);
+					}
+				}
 			}
 		}
 	}

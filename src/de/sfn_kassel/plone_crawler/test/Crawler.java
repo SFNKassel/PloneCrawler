@@ -6,6 +6,7 @@ public class Crawler extends Thread{
 	TaskQueEmptyListener onTaskQueEmptyListener;
 	TaskFinishedListener onTaskFinished;
 	String startname;
+	boolean waiting = true;
 	
 	public Crawler(TaskQueEmptyListener onTaskQueEmptyListener, TaskFinishedListener onTaskFinished) {
 		this.onTaskFinished = onTaskFinished;
@@ -19,7 +20,9 @@ public class Crawler extends Thread{
 		int i = 0;
 		while (true) {
 			try {
+			waiting = true;
 			Page currentPage = onTaskQueEmptyListener.onTaskQueEmpty();
+			waiting = false;
 			setNamePostfix("downloading" + "	(" + i + ")");
 			currentPage.loadPage();
 			i++;

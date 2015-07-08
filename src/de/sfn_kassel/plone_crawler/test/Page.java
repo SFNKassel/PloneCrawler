@@ -12,15 +12,16 @@ import java.util.Scanner;
 
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
-public class Page {
 
+public class Page {
+	
 	URL url;
 	PageContent content;
-
+	
 	public Page(URL url) {
 		this.url = url;
 	}
-
+	
 	public void loadPage() {
 		URLConnection connection = null;
 		try {
@@ -40,7 +41,7 @@ public class Page {
 		fw.write(content.content);
 		fw.close();
 	}
-
+	
 	public Page[] getLinks() {
 		String[] raw = getLinkStrings();
 		ArrayList<Page> links = new ArrayList<Page>();
@@ -56,7 +57,7 @@ public class Page {
 					raw[i] = superURL.toString() + "/" + raw[i];
 				} else if (raw[i].startsWith("/")) {
 					String host = url.getHost();
-					raw[i] = url.toString().substring(0, url.toString().indexOf(host)+host.length()) + raw[i];
+					raw[i] = url.toString().substring(0, url.toString().indexOf(host) + host.length()) + raw[i];
 				}
 				URL newUrl = new URL(raw[i]);
 				links.add(new Page(newUrl));
@@ -66,7 +67,8 @@ public class Page {
 		}
 		return links.toArray(new Page[1]);
 	}
-	
+
+
 	public void replaceLinks(String rootName) {
 		String[] links = getLinkStrings();
 		for (String link : links) {
@@ -91,7 +93,7 @@ public class Page {
 		System.arraycopy(src, 0, raw, href.length, src.length);
 		return raw;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
