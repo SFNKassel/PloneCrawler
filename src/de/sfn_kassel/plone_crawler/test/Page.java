@@ -4,7 +4,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
+
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
 public class Page {
@@ -47,7 +49,8 @@ public class Page {
 		// System.out.println("ping");
 		// String[] raw = (String[]) Stream.concat(Arrays.stream(href),
 		// Arrays.stream(href)).toArray();
-		String[] raw = href; // TODO: Fix me
+		String[] raw = Arrays.copyOf(href, href.length+src.length);
+		System.arraycopy(src, 0, raw, href.length, src.length);
 		// System.out.println("pong");
 		ArrayList<Page> links = new ArrayList<Page>();
 		for (int i = 0; i < raw.length; i++) {
@@ -60,6 +63,9 @@ public class Page {
 						raw[i] = raw[i].substring(3);
 					} while (raw[i].startsWith("../"));
 					raw[i] = superURL.toString() + "/" + raw[i];
+				} else if (raw[i].startsWith("/")) {
+					String host = url.getHost();
+					raw[i] = url.toString().substring(0, url.toString().indexOf(host)+host.length()) + raw[i];
 				}
 				URL newUrl = new URL(raw[i]);
 				links.add(new Page(newUrl));
@@ -74,4 +80,5 @@ public class Page {
 	public String toString() {
 		return "[Page: " + this.url.toString() + " loaded: " + (content != null) + "]";
 	}
+	
 }

@@ -1,6 +1,9 @@
 package de.sfn_kassel.plone_crawler.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +15,8 @@ public class Test {
 	static HashSet<String> urls = new HashSet<>();
 
 	public static void main(String[] args) throws IOException {
-		String startpage = "http://physikclub.de";
+//		String startpage = "http://physikclub.de";
+		String startpage = "http://blog.aschnabel.bplaced.net/";
 		futurePages.add(new Page(new URL(startpage)));
 
 		Checker<URL> urlChecker = new Checker<URL>() {
@@ -79,6 +83,29 @@ public class Test {
 			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener);
 			c.setName("Crawler Thread " + i);
 			c.start();
+		}
+		
+		while (true) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			synchronized (urls) {
+				System.out.print("saving... ");
+				File out = new File("out.jobj");
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(out));
+				oos.writeObject(urls);
+				oos.close();
+				File backup = new File("backup.jobj");
+				backup.delete();
+				out.renameTo(backup);
+				System.out.println("finished");
+			}
+			synchronized (futurePages) {
+				if (futurePages.isEmpty())
+					break;
+			}
 		}
 	}
 }
