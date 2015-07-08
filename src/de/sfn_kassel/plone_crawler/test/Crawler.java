@@ -1,5 +1,7 @@
 package de.sfn_kassel.plone_crawler.test;
 
+import java.io.File;
+
 public class Crawler extends Thread{
 	TaskQueEmptyListener onTaskQueEmptyListener;
 	TaskFinishedListener onTaskFinished;
@@ -22,6 +24,8 @@ public class Crawler extends Thread{
 			currentPage.loadPage();
 			i++;
 			setNamePostfix("waiting" + "	(" + i + ")");
+			currentPage.replaceLinks(startname);
+			currentPage.writePage(new File("page/"), startname);
 			onTaskFinished.onTaskFinished(currentPage);
 			} catch(Exception e) {
 //				e.printStackTrace();

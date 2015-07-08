@@ -16,7 +16,7 @@ public class Test {
 
 	public static void main(String[] args) throws IOException {
 //		String startpage = "http://physikclub.de";
-		String startpage = "http://blog.aschnabel.bplaced.net/";
+		String startpage = "http://blog.aschnabel.bplaced.net";
 		futurePages.add(new Page(new URL(startpage)));
 
 		Checker<URL> urlChecker = new Checker<URL>() {
@@ -55,7 +55,7 @@ public class Test {
 						}
 					}
 				}
-//				System.out.println(before + "," + (fguturePages.size() - before) + "," + donePages.size());
+				System.out.println(before + "," + (futurePages.size() - before) + "," + donePages.size());
 			}
 		};
 

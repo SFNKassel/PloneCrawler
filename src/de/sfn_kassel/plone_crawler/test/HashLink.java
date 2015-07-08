@@ -1,14 +1,12 @@
 package de.sfn_kassel.plone_crawler.test;
 
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-@Deprecated
 public class HashLink {
-	URL url;
+	String url;
 	
-	public HashLink(URL url) {
+	public HashLink(String url) {
 		this.url = url;
 	}
 	
