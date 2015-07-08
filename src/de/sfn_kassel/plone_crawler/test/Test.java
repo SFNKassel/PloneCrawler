@@ -83,7 +83,7 @@ public class Test {
 		
 		ArrayList<Crawler> crawlers = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener);
+			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener, startpage);
 			c.setName("Crawler Thread " + i);
 			c.start();
 			crawlers.add(c);

@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;
 
@@ -72,7 +73,7 @@ public class Page {
 	public void replaceLinks(String rootName) {
 		String[] links = getLinkStrings();
 		for (String link : links) {
-			content.content.replaceAll(link, new HashLink(link).getNameHash(rootName));
+			content.content = content.content.replaceAll(Matcher.quoteReplacement(link), new HashLink(link).getNameHash(rootName));
 		}
 	}
 	

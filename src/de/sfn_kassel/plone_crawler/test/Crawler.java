@@ -6,11 +6,13 @@ public class Crawler extends Thread{
 	TaskQueEmptyListener onTaskQueEmptyListener;
 	TaskFinishedListener onTaskFinished;
 	String startname;
+	String startpage;
 	boolean waiting = true;
 	
-	public Crawler(TaskQueEmptyListener onTaskQueEmptyListener, TaskFinishedListener onTaskFinished) {
+	public Crawler(TaskQueEmptyListener onTaskQueEmptyListener, TaskFinishedListener onTaskFinished, String startpage) {
 		this.onTaskFinished = onTaskFinished;
 		this.onTaskQueEmptyListener = onTaskQueEmptyListener;
+		this.startpage = startpage;
 	}
 	
 	@Override
@@ -28,10 +30,11 @@ public class Crawler extends Thread{
 			i++;
 			setNamePostfix("waiting" + "	(" + i + ")");
 			onTaskFinished.onTaskFinished(currentPage);
-//			currentPage.replaceLinks(startname);
-			currentPage.writePage(new File("page/"), startname);
+
+			currentPage.replaceLinks(startpage);
+			currentPage.writePage(new File("page/"), startpage);
 			} catch(Exception e) {
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}
