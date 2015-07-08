@@ -1,9 +1,10 @@
 package de.sfn_kassel.plone_crawler.test;
 
-public class Crawler extends Thread{
+public class Crawler extends Thread {
 	TaskQueEmptyListener onTaskQueEmptyListener;
 	TaskFinishedListener onTaskFinished;
 	String startname;
+	boolean waiting = true;
 	
 	public Crawler(TaskQueEmptyListener onTaskQueEmptyListener, TaskFinishedListener onTaskFinished) {
 		this.onTaskFinished = onTaskFinished;
@@ -17,14 +18,16 @@ public class Crawler extends Thread{
 		int i = 0;
 		while (true) {
 			try {
-			Page currentPage = onTaskQueEmptyListener.onTaskQueEmpty();
-			setNamePostfix("downloading" + "	(" + i + ")");
-			currentPage.loadPage();
-			i++;
-			setNamePostfix("waiting" + "	(" + i + ")");
-			onTaskFinished.onTaskFinished(currentPage);
-			} catch(Exception e) {
-//				e.printStackTrace();
+				waiting = true;
+				Page currentPage = onTaskQueEmptyListener.onTaskQueEmpty();
+				waiting = false;
+				setNamePostfix("downloading" + "	(" + i + ")");
+				currentPage.loadPage();
+				i++;
+				setNamePostfix("waiting" + "	(" + i + ")");
+				onTaskFinished.onTaskFinished(currentPage);
+			} catch (Exception e) {
+				// e.printStackTrace();
 			}
 		}
 	}
