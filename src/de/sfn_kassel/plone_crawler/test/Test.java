@@ -59,7 +59,7 @@ public class Test {
 			}
 		};
 
-		TaskQueEmptyListener onTaskQueEmptyListener = new TaskQueEmptyListener() {
+		TaskQueEmptyListener taskQueEmptyListener = new TaskQueEmptyListener() {
 			@Override
 			public synchronized Page onTaskQueEmpty() {
 				while (true)
@@ -80,7 +80,7 @@ public class Test {
 		};
 
 		for (int i = 0; i < 10; i++) {
-			Crawler c = new Crawler(onTaskQueEmptyListener, taskFinishedListener);
+			Crawler c = new Crawler(taskQueEmptyListener, taskFinishedListener);
 			c.setName("Crawler Thread " + i);
 			c.start();
 		}
