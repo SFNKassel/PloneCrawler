@@ -3,7 +3,6 @@ package de.sfn_kassel.plone_crawler.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import de.sfn_kassel.plone_crawler.test.PageContent.Type;

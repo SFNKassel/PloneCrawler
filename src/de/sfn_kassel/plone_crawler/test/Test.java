@@ -8,20 +8,20 @@ public class Test {
 
 	static ArrayList<Page> futurePages = new ArrayList<>();
 	static ArrayList<Page> donePages = new ArrayList<>();
-	static ArrayList<String> Urls = new ArrayList<>();
+	static ArrayList<String> urls = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
 		String startpage = "http://physikclub.de";
 		futurePages.add(new Page(new URL(startpage)));
 
-		Checker<URL> URLChecker = new Checker<URL>() {
+		Checker<URL> urlChecker = new Checker<URL>() {
 			@Override
 			public boolean check(URL object) {
-				boolean exsist = false;
-				synchronized (Urls) {
-					for (String page : Urls) {
+				boolean exists = false;
+				synchronized (urls) {
+					for (String page : urls) {
 						if (page.equals(new HashLink(object).getNameHash(startpage))) {
-							exsist = true;
+							exists = true;
 							break;
 						}
 					}
@@ -29,14 +29,14 @@ public class Test {
 				
 //				System.err.println(exsist ? "true	" : "false	" + object.toString());
 				return !object.toString().contains("#") && object.toString().contains(startpage)
-						&& !object.toString().contains("@") && !exsist;
+						&& !object.toString().contains("@") && !exists;
 			}
 		};
 
-		OnTaskFinished onTaskFinished = new OnTaskFinished() {
+		TaskFinishedListener taskFinishedListener = new TaskFinishedListener() {
 
 			@Override
-			public synchronized void taskQueEmpty(Page finished) {
+			public synchronized void onTaskFinished(Page finished) {
 				// System.out.println("done: " + donePages.size() + " | todo: "
 				// + futurePages.size() + " "
 				// + finished.url.toString());
@@ -46,9 +46,9 @@ public class Test {
 					System.out.println(finished.url.toString() + "	->	" + new HashLink(finished.url).getNameHash(startpage));
 					synchronized (futurePages) {
 						for (Page p : finished.getLinks()) {
-							if (URLChecker.check(p.url)) {
-								synchronized (Urls) {
-									Urls.add(new HashLink(p.url).getNameHash(startpage));
+							if (urlChecker.check(p.url)) {
+								synchronized (urls) {
+									urls.add(new HashLink(p.url).getNameHash(startpage));
 								}
 								futurePages.add(p);
 							}
@@ -59,9 +59,9 @@ public class Test {
 			}
 		};
 
-		OnTaskQueEmptyListener onTaskQueEmptyListener = new OnTaskQueEmptyListener() {
+		TaskQueEmptyListener onTaskQueEmptyListener = new TaskQueEmptyListener() {
 			@Override
-			public synchronized Page taskQueEmpty() {
+			public synchronized Page onTaskQueEmpty() {
 				while (true)
 					while (true) {
 						synchronized (futurePages) {
@@ -80,7 +80,7 @@ public class Test {
 		};
 
 		for (int i = 0; i < 10; i++) {
-			Crawler c = new Crawler(onTaskQueEmptyListener, onTaskFinished);
+			Crawler c = new Crawler(onTaskQueEmptyListener, taskFinishedListener);
 			c.setName("Crawler Thread " + i);
 			c.start();
 		}
